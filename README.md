@@ -1,2 +1,3 @@
 # 7dbs-in-7wks
-Code from the "Seven Databases in Seven Weeks" book.
+
+Source code from the book is available on the [official website](https://pragprog.com/book/rwdata/seven-databases-in-seven-weeks).
