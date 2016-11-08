@@ -58,7 +58,7 @@ This exercise is fairly difficult. Here are the steps I followed.
        3 |   2 |     |     |     |     |     |
        4 |     |     |     |     |     |     |
     ```
-    
+
 
 2. We know a `crosstab` can achieve the above if we feed it a table like this:
 
@@ -95,7 +95,7 @@ This exercise is fairly difficult. Here are the steps I followed.
        4 |   2 |
        4 |   3 |
     ```
-    
+
 3. So we need to start by listing all the days in the month (we'll pick February 2012 since it has the most events):
 
     ```
@@ -106,7 +106,7 @@ This exercise is fairly difficult. Here are the steps I followed.
         '1 day'::interval
     ) AS date;
     ```
-        
+
     ```
               date
     ------------------------
@@ -140,7 +140,7 @@ This exercise is fairly difficult. Here are the steps I followed.
      2012-02-28 00:00:00+01
      2012-02-29 00:00:00+01
     ```
-    
+
 2. Then join with the events table:
 
     ```
@@ -149,14 +149,14 @@ This exercise is fairly difficult. Here are the steps I followed.
         SELECT date
         FROM generate_series(
             '2012-02-01'::date,
-            '2012-02-29'::date, 
+            '2012-02-29'::date,
             '1 day'::interval
         ) AS date
     ) AS dates
     LEFT JOIN events
     ON date = date_trunc('day', starts);
     ```
-        
+
     ```
               date          |      title
     ------------------------+-----------------
@@ -191,7 +191,7 @@ This exercise is fairly difficult. Here are the steps I followed.
      2012-02-28 00:00:00+01 |
      2012-02-29 00:00:00+01 |
     ```
-    
+
 3. Show the count instead of the title:
 
     ```
@@ -200,7 +200,7 @@ This exercise is fairly difficult. Here are the steps I followed.
         SELECT date
         FROM generate_series(
             '2012-02-01'::date,
-            '2012-02-29'::date, 
+            '2012-02-29'::date,
             '1 day'::interval
         ) AS date
     ) AS dates
@@ -209,7 +209,7 @@ This exercise is fairly difficult. Here are the steps I followed.
     GROUP BY date
     ORDER BY date;
     ```
-        
+
     ```
               date          | count
     ------------------------+-------
@@ -243,7 +243,7 @@ This exercise is fairly difficult. Here are the steps I followed.
      2012-02-28 00:00:00+01 |
      2012-02-29 00:00:00+01 |
     ```
-    
+
 4. Show the week of month and day of week instead of the date:
 
     ```
@@ -255,7 +255,7 @@ This exercise is fairly difficult. Here are the steps I followed.
         SELECT date
         FROM generate_series(
             '2012-02-01'::date,
-            '2012-02-29'::date, 
+            '2012-02-29'::date,
             '1 day'::interval
         ) AS date
     ) AS dates
@@ -264,7 +264,7 @@ This exercise is fairly difficult. Here are the steps I followed.
     GROUP BY date
     ORDER BY date;
     ```
-        
+
     ```
      wom | dow | count
     -----+-----+-------
@@ -298,7 +298,7 @@ This exercise is fairly difficult. Here are the steps I followed.
        4 |   2 |
        4 |   3 |
     ```
-    
+
 5. We're now ready for the `crosstab`:
 
     ```
@@ -311,14 +311,14 @@ This exercise is fairly difficult. Here are the steps I followed.
                 SELECT date
                 FROM generate_series(
                     ''2012-02-01''::date,
-                    ''2012-02-29''::date, 
+                    ''2012-02-29''::date,
                     ''1 day''::interval
                 ) AS date
             ) AS dates
             LEFT JOIN events
             ON date = date_trunc(''day'', starts)
             GROUP BY date
-            ORDER BY date',            
+            ORDER BY date',
            'SELECT * from generate_series(0, 6)'
         ) AS (
             wom int,
@@ -326,7 +326,7 @@ This exercise is fairly difficult. Here are the steps I followed.
         )
         ORDER BY wom;
     ```
-    
+
     ```
      wom | sun | mon | tue | wed | thu | fri | sat
     -----+-----+-----+-----+-----+-----+-----+-----
@@ -337,5 +337,53 @@ This exercise is fairly difficult. Here are the steps I followed.
        4 |     |     |     |     |     |     |
     (5 rows)
     ```
-    
+
     Yay!
+
+## Day 3
+
+### 1.
+
+```
+CREATE OR REPLACE FUNCTION suggestion(input text)
+RETURNS SETOF text as $$
+BEGIN
+  RETURN QUERY
+  SELECT m.title
+  FROM movies m,
+       (SELECT genre FROM movies WHERE title ILIKE input) g,
+       cube_distance(m.genre, g.genre) dist
+  ORDER BY dist
+  LIMIT 5;
+
+  IF FOUND THEN RETURN; END IF;
+
+  RETURN QUERY
+  SELECT m.title
+  FROM movies m
+  NATURAL JOIN movies_actors
+  NATURAL JOIN actors a
+  WHERE a.name ILIKE input
+  LIMIT 5;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+### 2.
+
+Ignored the last-name-only requirement. Splitting full names into first and last names is not reliable anyway.
+
+```
+CREATE TABLE comments (comment text);
+
+INSERT INTO comments (comment) VALUES
+    ('I love Bruce Willis!'),
+    ('Anthony Hopkins is the best'),
+    ('Meh, don''t like Bruce Willis');
+
+SELECT a.name, count(*)
+FROM actors a
+JOIN comments c ON c.comment @@ plainto_tsquery(a.name)
+GROUP BY a.name
+ORDER BY count DESC;
+```
