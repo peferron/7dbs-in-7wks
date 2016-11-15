@@ -5,7 +5,7 @@
 ### 1.
 
 ```
-curl -i -X PUT "http://localhost:10038/riak/animals/polly" \
+curl -X PUT "http://localhost:10038/riak/animals/polly" \
 -H "Link: </riak/photos/polly.jpg>; riaktag=\"photo\"" \
 -d '{"nickname": "Sweet Polly Purebred", "breed": "Purebred"}'
 ```
@@ -13,7 +13,7 @@ curl -i -X PUT "http://localhost:10038/riak/animals/polly" \
 ### 2.
 
 ```
-curl -i -X PUT "http://localhost:10038/riak/cats/takkun.svg" \
+curl -X PUT "http://localhost:10038/riak/cats/takkun.svg" \
 -H "Content-Type: image/svg+xml" \
 --data-binary @takkun.svg
 ```
@@ -21,7 +21,7 @@ curl -i -X PUT "http://localhost:10038/riak/cats/takkun.svg" \
 ### 3.
 
 ```
-curl -i -X PUT "http://localhost:10038/riak/medicines/antibiotics" \
+curl -X PUT "http://localhost:10038/riak/medicines/antibiotics" \
 -H "Content-Type: image/jpeg" \
 -H "Link: </riak/animals/ace>; riaktag=\"treats\"" \
 --data-binary @antibiotics.jpg
@@ -32,8 +32,9 @@ curl -i -X PUT "http://localhost:10038/riak/medicines/antibiotics" \
 ### 1.
 
 ```
-curl -X POST -H "content-type:application/json" \
-"http://localhost:10018/mapred" --data @-
+curl -X POST "http://localhost:10018/mapred" \
+-H "content-type:application/json" \
+--data @-
 {
     "inputs": "rooms",
     "query": [
@@ -70,8 +71,9 @@ curl -X POST -H "content-type:application/json" \
 ### 2.
 
 ```
-curl -X POST -H "content-type:application/json" \
-"http://localhost:10018/mapred" --data @-
+curl -X POST "http://localhost:10018/mapred" \
+-H "content-type:application/json" \
+--data @-
 {
     "inputs": {
         "bucket": "rooms",
@@ -107,3 +109,26 @@ curl -X POST -H "content-type:application/json" \
     ]
 }
 ```
+
+## Day 3
+
+### 1.
+
+Insert an animal with a score of 3:
+
+```
+curl -X PUT "http://localhost:10038/riak/animals/ace" \
+-H "Content-Type: application/json" \
+-H "x-riak-index-score_int: 3" \
+-d '{"nickname": "The Wonder Dog", "breed": "German Shepherd"}'
+```
+
+Query all animals with a score between 1 and 3, inclusive:
+
+```
+curl -i "http://localhost:10028/buckets/animals/index/score_int/1/3"
+```
+
+### 2.
+
+Skipped.
