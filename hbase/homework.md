@@ -164,3 +164,7 @@ COLUMN                         CELL
  fact:Whole_Grains             timestamp=1480381540462, value=.00000
 25 row(s) in 0.0430 seconds
 ```
+
+## Day 3
+
+Skipped.
