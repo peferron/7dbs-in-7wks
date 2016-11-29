@@ -4,7 +4,7 @@
 
 ### 1.
 
-```
+```bash
 curl -X PUT "http://localhost:10038/riak/animals/polly" \
 -H "Link: </riak/photos/polly.jpg>; riaktag=\"photo\"" \
 -d '{"nickname": "Sweet Polly Purebred", "breed": "Purebred"}'
@@ -12,7 +12,7 @@ curl -X PUT "http://localhost:10038/riak/animals/polly" \
 
 ### 2.
 
-```
+```bash
 curl -X PUT "http://localhost:10038/riak/cats/takkun.svg" \
 -H "Content-Type: image/svg+xml" \
 --data-binary @takkun.svg
@@ -20,7 +20,7 @@ curl -X PUT "http://localhost:10038/riak/cats/takkun.svg" \
 
 ### 3.
 
-```
+```bash
 curl -X PUT "http://localhost:10038/riak/medicines/antibiotics" \
 -H "Content-Type: image/jpeg" \
 -H "Link: </riak/animals/ace>; riaktag=\"treats\"" \
@@ -31,7 +31,7 @@ curl -X PUT "http://localhost:10038/riak/medicines/antibiotics" \
 
 ### 1.
 
-```
+```bash
 curl -X POST "http://localhost:10018/mapred" \
 -H "content-type:application/json" \
 --data @-
@@ -70,7 +70,7 @@ curl -X POST "http://localhost:10018/mapred" \
 
 ### 2.
 
-```
+```bash
 curl -X POST "http://localhost:10018/mapred" \
 -H "content-type:application/json" \
 --data @-
@@ -116,7 +116,7 @@ curl -X POST "http://localhost:10018/mapred" \
 
 Insert an animal with a score of 3:
 
-```
+```bash
 curl -X PUT "http://localhost:10038/riak/animals/ace" \
 -H "Content-Type: application/json" \
 -H "x-riak-index-score_int: 3" \

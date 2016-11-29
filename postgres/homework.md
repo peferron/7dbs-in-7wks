@@ -4,7 +4,7 @@
 
 ### 1.
 
-```
+```SQL
 SELECT relname FROM pg_class
 WHERE relname !~ '^(pg_|sql_)'
 AND relkind = 'r';
@@ -12,7 +12,7 @@ AND relkind = 'r';
 
 ### 2.
 
-```
+```SQL
 SELECT c.country_name FROM countries c
 JOIN venues v ON c.country_code = v.country_code
 JOIN events e ON v.venue_id = e.venue_id
@@ -21,7 +21,7 @@ WHERE e.title = 'LARP Club';
 
 ### 3.
 
-```
+```SQL
 ALTER TABLE venues
 ADD COLUMN active BOOLEAN DEFAULT TRUE;
 ```
@@ -30,7 +30,7 @@ ADD COLUMN active BOOLEAN DEFAULT TRUE;
 
 ### 1.
 
-```
+```SQL
 CREATE RULE delete_venue
 AS ON DELETE TO venues DO INSTEAD
 UPDATE venues SET active = false WHERE venue_id = OLD.venue_id;
@@ -38,7 +38,7 @@ UPDATE venues SET active = false WHERE venue_id = OLD.venue_id;
 
 ### 2.
 
-```
+```SQL
 SELECT * FROM generate_series(1, 12);
 ```
 
@@ -97,7 +97,7 @@ This exercise is fairly difficult. Here are the steps I followed.
 
 3. So we need to start by listing all the days in the month (we'll pick February 2012 since it has the most events):
 
-    ```
+    ```SQL
     SELECT date
     FROM generate_series(
         '2012-02-01'::date,
@@ -142,7 +142,7 @@ This exercise is fairly difficult. Here are the steps I followed.
 
 2. Then join with the events table:
 
-    ```
+    ```SQL
     SELECT date, title
     FROM (
         SELECT date
@@ -193,7 +193,7 @@ This exercise is fairly difficult. Here are the steps I followed.
 
 3. Show the count instead of the title:
 
-    ```
+    ```SQL
     SELECT date, NullIf(count(events), 0) AS count
     FROM (
         SELECT date
@@ -245,7 +245,7 @@ This exercise is fairly difficult. Here are the steps I followed.
 
 4. Show the week of month and day of week instead of the date:
 
-    ```
+    ```SQL
     SELECT
         extract(week from date) - extract(week from date_trunc('month', date)) AS wom,
         extract(dow from date) AS dow,
@@ -300,7 +300,7 @@ This exercise is fairly difficult. Here are the steps I followed.
 
 5. We're now ready for the `crosstab`:
 
-    ```
+    ```SQL
         SELECT * from crosstab(
            'SELECT
                 extract(week from date) - extract(week from date_trunc(''month'', date)) AS wom,
@@ -343,7 +343,7 @@ This exercise is fairly difficult. Here are the steps I followed.
 
 ### 1.
 
-```
+```SQL
 CREATE OR REPLACE FUNCTION suggestion(input text)
 RETURNS SETOF text as $$
 BEGIN
@@ -372,7 +372,7 @@ $$ LANGUAGE plpgsql;
 
 Ignored the last-name-only requirement. Splitting full names into first and last names is not reliable anyway.
 
-```
+```SQL
 CREATE TABLE comments (comment text);
 
 INSERT INTO comments (comment) VALUES
