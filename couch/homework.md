@@ -163,3 +163,111 @@ function(artist) {
   });
 }
 ```
+
+### Day 3
+
+### Find, 1.
+
+[Built-In Reduce Functions](https://wiki.apache.org/couchdb/Built-In_Reduce_Functions)
+
+`sum`, `count` and `stats`. Faster than JS because implemented in Erlang and runs directly inside CouchDB.
+
+### Find, 2.
+
+Um, using the `filter` query parameter shown in the book? Don't get this question.
+
+### Find, 3.
+
+Run a one-time replication:
+
+```bash
+curl -i -X POST "http://localhost:5984/_replicate" \
+-H "Content-Type: application/json" \
+-d '{"source": "music", "target": "music-repl"}'
+```
+
+Run a continuous replication (lost on server restart):
+
+```bash
+curl -i -X POST "http://localhost:5984/_replicate" \
+-H "Content-Type: application/json" \
+-d '{"source": "music", "target": "music-repl", "continuous": true}'
+```
+
+Cancel a replication (add `"continuous": true` if the replication was continuous):
+
+```bash
+curl -i -X POST "http://localhost:5984/_replicate" \
+-H "Content-Type: application/json" \
+-d '{"source": "music", "target": "music-repl", "cancel": true}'
+```
+
+### Find, 4.
+
+`POST` (or `PUT`) to `_replicator` instead of `_replicate`. Replications will be stored in the `_replicator` database, and automatically restarted if the server restarts. Replications can be deleted with `DELETE` just like normal documents.
+
+### Do, 1 & 2.
+
+Body of the `watcher.start` function:
+
+```js
+var http_options = {
+  host: watcher.host,
+  port: watcher.port,
+  path: '/' + watcher.db + '/_changes' +
+    '?feed=continuous&include_docs=true&since=' + watcher.last_seq
+};
+
+http.get(http_options, function(res) {
+  var buffer = '';
+  var error = false;
+
+  res.on('data', function(chunk) {
+    buffer += chunk;
+
+    var lastNewLine = buffer.lastIndexOf('\n');
+    if (lastNewLine < 0) {
+      return;
+    }
+
+    var lines = buffer.substring(0, lastNewLine).split('\n');
+    buffer = buffer.substring(lastNewLine + 1);
+
+    lines.forEach(function(line) {
+      if (!line) {
+        return;
+      }
+
+      var change = JSON.parse(line);
+
+      if (change.hasOwnProperty(error)) {
+        error = true;
+        watcher.emit('error', change);
+      } else if (change.hasOwnProperty('seq')) {
+        watcher.last_seq = change.seq;
+        watcher.emit('change', change);
+      }
+    });
+  });
+
+  res.on('end', function() {
+    if (!error) {
+      watcher.start();
+    }
+  })
+})
+.on('error', function(err) {
+  watcher.emit('error', err);
+});
+
+```
+
+### Do, 3.
+
+```
+function(doc) {
+  if (doc._conflicts) {
+    emit(doc._id, {_rev: doc._rev, _conflicts: doc._conflicts});
+  }
+}
+```
