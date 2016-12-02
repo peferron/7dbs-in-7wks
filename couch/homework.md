@@ -99,3 +99,67 @@ $ curl "http://localhost:5984/my_new_db/12edea69b62a7136c1efc01e44030ca8/hello.t
 
 Hello, World!
 ```
+
+## Day 2
+
+### Find, 1.
+
+Keys can be numbers, arrays, or objects.
+
+### Find, 2.
+
+[Querying Options](https://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options)
+
+### Do, 1.
+
+```js
+function(artist) {
+  emit(artist.random, artist.name);
+}
+```
+
+### Do, 2.
+
+```bash
+curl -i "http://localhost:5984/music/_design/random/_view/artist?limit=1&startkey=$(ruby -e 'puts rand')"
+```
+
+Note that this can return an empty array if the randomly generated `startkey` parameter is greater than all `random` values in the DB.
+
+### Do, 3.
+
+Album view:
+
+```js
+function(artist) {
+  artist.albums.forEach(function(album) {
+    emit(album.random, artist.name + " - " + album.name);
+  });
+}
+```
+
+Track view:
+
+```js
+function(artist) {
+  artist.albums.forEach(function(album) {
+    album.tracks.forEach(function(track) {
+      emit(track.random, artist.name + " - " + album.name + " - " + track.name);
+    });
+  });
+}
+```
+
+Tag view (the same tag can appear multiple times):
+
+```js
+function(artist) {
+  artist.albums.forEach(function(album) {
+    album.tracks.forEach(function(track) {
+      track.tags.forEach(function(tag) {
+        emit(tag.random, tag.idstr);
+      });
+    });
+  });
+}
+```
