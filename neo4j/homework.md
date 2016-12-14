@@ -83,3 +83,7 @@ compare_distance(elvis, roddy, bacon)
 ### Do, 2 & 3.
 
 Skipped.
+
+## Day 3
+
+Skipped.
