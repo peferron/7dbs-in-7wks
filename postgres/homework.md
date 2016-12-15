@@ -2,7 +2,7 @@
 
 ## Day 1
 
-### 1.
+### Do, 1.
 
 ```SQL
 SELECT relname FROM pg_class
@@ -10,7 +10,7 @@ WHERE relname !~ '^(pg_|sql_)'
 AND relkind = 'r';
 ```
 
-### 2.
+### Do, 2.
 
 ```SQL
 SELECT c.country_name FROM countries c
@@ -19,7 +19,7 @@ JOIN events e ON v.venue_id = e.venue_id
 WHERE e.title = 'LARP Club';
 ```
 
-### 3.
+### Do, 3.
 
 ```SQL
 ALTER TABLE venues
@@ -28,7 +28,7 @@ ADD COLUMN active BOOLEAN DEFAULT TRUE;
 
 ## Day 2
 
-### 1.
+### Do, 1.
 
 ```SQL
 CREATE RULE delete_venue
@@ -36,13 +36,13 @@ AS ON DELETE TO venues DO INSTEAD
 UPDATE venues SET active = false WHERE venue_id = OLD.venue_id;
 ```
 
-### 2.
+### Do, 2.
 
 ```SQL
 SELECT * FROM generate_series(1, 12);
 ```
 
-### 3.
+### Do, 3.
 
 This exercise is fairly difficult. Here are the steps I followed.
 
@@ -341,7 +341,7 @@ This exercise is fairly difficult. Here are the steps I followed.
 
 ## Day 3
 
-### 1.
+### Do, 1.
 
 ```SQL
 CREATE OR REPLACE FUNCTION suggestion(input text)
@@ -368,7 +368,7 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-### 2.
+### Do, 2.
 
 Ignored the last-name-only requirement. Splitting full names into first and last names is not reliable anyway.
 

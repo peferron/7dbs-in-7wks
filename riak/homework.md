@@ -2,7 +2,7 @@
 
 ## Day 1
 
-### 1.
+### Do, 1.
 
 ```bash
 curl -X PUT "http://localhost:10038/riak/animals/polly" \
@@ -10,7 +10,7 @@ curl -X PUT "http://localhost:10038/riak/animals/polly" \
 -d '{"nickname": "Sweet Polly Purebred", "breed": "Purebred"}'
 ```
 
-### 2.
+### Do, 2.
 
 ```bash
 curl -X PUT "http://localhost:10038/riak/cats/takkun.svg" \
@@ -18,7 +18,7 @@ curl -X PUT "http://localhost:10038/riak/cats/takkun.svg" \
 --data-binary @takkun.svg
 ```
 
-### 3.
+### Do, 3.
 
 ```bash
 curl -X PUT "http://localhost:10038/riak/medicines/antibiotics" \
@@ -29,7 +29,7 @@ curl -X PUT "http://localhost:10038/riak/medicines/antibiotics" \
 
 ## Day 2
 
-### 1.
+### Do, 1.
 
 ```bash
 curl -X POST "http://localhost:10018/mapred" \
@@ -68,7 +68,7 @@ curl -X POST "http://localhost:10018/mapred" \
 }
 ```
 
-### 2.
+### Do, 2.
 
 ```bash
 curl -X POST "http://localhost:10018/mapred" \
@@ -112,7 +112,7 @@ curl -X POST "http://localhost:10018/mapred" \
 
 ## Day 3
 
-### 1.
+### Do, 1.
 
 Insert an animal with a score of 3:
 
@@ -129,6 +129,6 @@ Query all animals with a score between 1 and 3, inclusive:
 curl -i "http://localhost:10028/buckets/animals/index/score_int/1/3"
 ```
 
-### 2.
+### Do, 2.
 
 Skipped.
